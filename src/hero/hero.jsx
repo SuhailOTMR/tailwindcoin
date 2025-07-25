@@ -2,6 +2,8 @@ import React from 'react';
 import Scroller from '../scroller/scroller';
 import Carousel from '../controll/ControlableSlide';
 import { FaStar, FaStarHalfAlt } from 'react-icons/fa';
+// import CashoutDashboard from '../dashboarser';
+// import Trust from '../trust';
 
 const Hero = () => {
     const starStyle = {
@@ -232,10 +234,14 @@ const Hero = () => {
                     />
                 </div>
                 <img src="/zoo700.png" alt="" className="img-fluid mt-20" style={{ width: "1000px", margin: "60px auto" }} />
+
+                {/* <CashoutDashboard/> */}
             </div>
 
             {/* Carousel section */}
             <Carousel />
+
+           
 
             {/* Community section */}
             <div
