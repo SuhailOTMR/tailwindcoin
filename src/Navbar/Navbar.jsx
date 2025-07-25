@@ -8,17 +8,7 @@ import { FaEnvelope, FaLock } from 'react-icons/fa';
 import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 
-const Modal = ({ title, content, onClose }) => (
-  <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
-    <div className="bg-[#1E1B2E] text-white p-6 rounded-xl max-w-lg w-full relative">
-      <button onClick={onClose} className="absolute top-4 right-4 text-white hover:text-gray-300">
-        ✕
-      </button>
-      <h3 className="text-xl font-bold mb-4 text-center">{title}</h3>
-      <p className="text-sm text-gray-300">{content}</p>
-    </div>
-  </div>
-);
+
 const SignUp = ({ isPopupOpen, setIsPopupOpen }) => {
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
@@ -229,18 +219,18 @@ const Navbar = () => {
           </a>
           <div className={Style.navmenu}>
             <div className="flex gap-1">
-              <FaHandHoldingUsd style={{ color: "#a9a9ca", fontSize: "20px" }} />
-              <span style={{ color: "#a9a9ca" }}>Earn</span>
+              <FaHandHoldingUsd style={{ color: "#a9a9ca", fontSize: "20px",cursor:"pointer" }} />
+              <span style={{ color: "#a9a9ca",cursor:"pointer" }}>Earn</span>
             </div>
             <div className="flex gap-1 mt-1">
-              <BsCashCoin style={{ color: "#a9a9ca", fontSize: "20px", marginTop: "5px" }} />
-              <span style={{ color: "#a9a9ca" }}>Cashout</span>
+              <BsCashCoin style={{ color: "#a9a9ca", fontSize: "20px", marginTop: "5px",cursor:"pointer" }} />
+              <span style={{ color: "#a9a9ca",cursor:"pointer" }}>Cashout</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <button className={`btn ${Style.navmenu}`}>
+          <button className={`btn ${Style.navmenu}`} style={{cursor:"pointer"}}>
             <BsGlobe style={{ fontSize: "20px", color: "#a9a9ca" }} />
           </button>
           <div className={Style.info}>
@@ -250,6 +240,7 @@ const Navbar = () => {
                 setPopupType('signin');
                 setIsPopupOpen(true);
               }}
+              style={{cursor:"pointer"}}
             >
               Login
             </button>
@@ -259,6 +250,7 @@ const Navbar = () => {
                 setPopupType('signup');
                 setIsPopupOpen(true);
               }}
+              style={{cursor:"pointer"}}
             >
               Sign Up
             </button>
