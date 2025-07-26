@@ -9,63 +9,203 @@ import { FcGoogle } from 'react-icons/fc';
 import { FaFacebook } from 'react-icons/fa';
 
 
+// const SignUp = ({ isPopupOpen, setIsPopupOpen }) => {
+//   return (
+//     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
+//       <div
+//         className="bg-[#1E1B2E] text-white w-full max-w-md rounded-2xl p-6 overflow-y-auto hide-scrollbar relative"
+//         style={{ maxHeight: '90vh' }}
+//       >
+//         {/* Centered heading with absolute close button */}
+//         <div className="mb-6 relative text-center">
+//           <h2 className="text-2xl font-bold">Sign Up</h2>
+//           <button
+//             onClick={() => setIsPopupOpen(false)}
+//             className="absolute top-0 right-0 text-white hover:text-gray-300"
+//           >
+//             <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+//               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+//             </svg>
+//           </button>
+//         </div>
+
+//         {/* Form Fields */}
+//         <form className="space-y-4">
+//           {[
+//             { label: 'First Name', icon: <FaEnvelope />, placeholder: 'Enter First Name' },
+//             { label: 'Last Name', icon: <FaLock />, placeholder: 'Enter Last Name' },
+//             { label: 'User Name', icon: <FaEnvelope />, placeholder: 'Enter User Name' },
+//             { label: 'Email Address', icon: <FaLock />, placeholder: 'Enter Email Address' },
+//             { label: 'Mobile', icon: <FaEnvelope />, placeholder: 'Enter Mobile' },
+//             { label: 'Password', icon: <FaLock />, placeholder: 'Enter Password', type: 'password' },
+//           ].map(({ label, icon, placeholder, type = 'text' }, i) => (
+//             <div key={i}>
+//               <label className="text-sm">{label}</label>
+//               <div className="flex items-center mt-1 bg-[#2B2A3D] rounded-lg px-3 py-2">
+//                 <span className="mr-3 text-lg text-gray-400">{icon}</span>
+//                 <input
+//                   type={type}
+//                   placeholder={placeholder}
+//                   className="bg-transparent outline-none w-full text-sm placeholder-gray-400"
+//                 />
+//               </div>
+//             </div>
+//           ))}
+//         </form>
+
+
+
+//         <div className="flex items-start space-x-2 text-xs text-white" style={{ margin: "10px 0px" }}>
+//           <input type="checkbox" id="terms" className="mt-1 accent-yellow-400" />
+//           <label htmlFor="terms">
+//             By signing up you agree to the <span className="text-yellow-400 font-semibold">Term & Condition</span> and{' '}
+//             <span className="text-yellow-400 font-semibold">Privacy Policy</span>
+//           </label>
+//         </div>
+
+//         <button className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold py-2 rounded-xl mt-5">
+//           Sign Up
+//         </button>
+
+//         {/* Social Auth */}
+//         <div className="my-4 text-center text-sm text-gray-400">or sign up with</div>
+//         <div className="flex justify-center gap-6 mt-2">
+//           <button className="text-2xl"><FcGoogle /></button>
+//           <button className="text-2xl text-blue-600"><FaFacebook /></button>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// };
+
+
+
+
+
 const SignUp = ({ isPopupOpen, setIsPopupOpen }) => {
+  const [loading, setLoading] = useState(false);
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [userName, setUserName] = useState("");
+  const [email, setEmail] = useState("");
+  const [mobile, setMobile] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [data, setData] = useState(null);
+
+  const handleSignUpSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null); // Clear any previous errors before making a new request
+
+    try {
+      const response = await fetch("https://api.coinlooty.com/user/signup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          firstName,
+          lastName,
+          userName,
+          email,
+          mobile,
+          password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === "Ok") {
+        // Handle successful signup (store token, user details, etc.)
+        setData(result);
+        console.log("SignUp successful:", result);
+      } else {
+        // Handle errors (user already exists, invalid data, etc.)
+        setError(result.responseMessage || "Sign Up failed. Please try again.");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
       <div
         className="bg-[#1E1B2E] text-white w-full max-w-md rounded-2xl p-6 overflow-y-auto hide-scrollbar relative"
         style={{ maxHeight: '90vh' }}
       >
-        {/* Centered heading with absolute close button */}
-        <div className="mb-6 relative text-center">
-          <h2 className="text-2xl font-bold">Sign Up</h2>
-          <button
-            onClick={() => setIsPopupOpen(false)}
-            className="absolute top-0 right-0 text-white hover:text-gray-300"
-          >
-            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
-            </svg>
-          </button>
-        </div>
+        {/* Close Button */}
+        <button
+          onClick={() => setIsPopupOpen(false)}
+          className="absolute top-0 right-0 text-white hover:text-gray-300"
+          style={{margin:"10px 20px"}}
+        >
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" width="24" height="24">
+            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+
+        {/* Heading */}
+        <h2 className="text-2xl font-bold mb-6 text-center">Sign Up</h2>
+
+        {/* Error or Success Message */}
+        {error ? (
+          <h2 style={{ color: "red", fontSize: "17px", textAlign: "center" }}>{error}</h2>
+        ) : data && data.status === "Ok" ? (
+          <h2 style={{ color: "green", fontSize: "17px", textAlign: "center" }}>
+            {data.responseMessage}
+          </h2>
+        ) : null}
 
         {/* Form Fields */}
-        <form className="space-y-4">
-          {[
-            { label: 'First Name', icon: <FaEnvelope />, placeholder: 'Enter First Name' },
-            { label: 'Last Name', icon: <FaLock />, placeholder: 'Enter Last Name' },
-            { label: 'User Name', icon: <FaEnvelope />, placeholder: 'Enter User Name' },
-            { label: 'Email Address', icon: <FaLock />, placeholder: 'Enter Email Address' },
-            { label: 'Mobile', icon: <FaEnvelope />, placeholder: 'Enter Mobile' },
-            { label: 'Password', icon: <FaLock />, placeholder: 'Enter Password', type: 'password' },
-          ].map(({ label, icon, placeholder, type = 'text' }, i) => (
+        <form onSubmit={handleSignUpSubmit} className="space-y-4">
+          {[ 
+            { label: 'First Name', value: firstName, setValue: setFirstName, placeholder: 'Enter First Name' },
+            { label: 'Last Name', value: lastName, setValue: setLastName, placeholder: 'Enter Last Name' },
+            { label: 'User Name', value: userName, setValue: setUserName, placeholder: 'Enter User Name' },
+            { label: 'Email Address', value: email, setValue: setEmail, placeholder: 'Enter Email Address' },
+            { label: 'Mobile', value: mobile, setValue: setMobile, placeholder: 'Enter Mobile' },
+            { label: 'Password', value: password, setValue: setPassword, placeholder: 'Enter Password', type: 'password' }
+          ].map(({ label, value, setValue, placeholder, type = 'text' }, i) => (
             <div key={i}>
               <label className="text-sm">{label}</label>
               <div className="flex items-center mt-1 bg-[#2B2A3D] rounded-lg px-3 py-2">
-                <span className="mr-3 text-lg text-gray-400">{icon}</span>
+                <span className="mr-3 text-lg text-gray-400">
+                  {type === 'password' ? <FaLock /> : <FaEnvelope />}
+                </span>
                 <input
                   type={type}
+                  value={value}
+                  onChange={(e) => setValue(e.target.value)}
                   placeholder={placeholder}
                   className="bg-transparent outline-none w-full text-sm placeholder-gray-400"
+                  required
                 />
               </div>
             </div>
           ))}
+
+          {/* Terms & Conditions */}
+          <div className="flex items-start space-x-2 text-xs text-white" style={{ margin: "10px 0px" }}>
+            <input type="checkbox" id="terms" className="mt-1 accent-yellow-400" />
+            <label htmlFor="terms">
+              By signing up you agree to the <span className="text-yellow-400 font-semibold">Term & Condition</span> and{' '}
+              <span className="text-yellow-400 font-semibold">Privacy Policy</span>
+            </label>
+          </div>
+
+          {/* Submit Button */}
+          <button
+            type="submit"
+            className={`w-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold py-2 rounded-xl mt-5 ${loading ? 'cursor-not-allowed opacity-50' : ''}`}
+            disabled={loading}
+          >
+            {loading ? "Signing Up..." : "Sign Up"}
+          </button>
         </form>
-
-
-
-        <div className="flex items-start space-x-2 text-xs text-white" style={{ margin: "10px 0px" }}>
-          <input type="checkbox" id="terms" className="mt-1 accent-yellow-400" />
-          <label htmlFor="terms">
-            By signing up you agree to the <span className="text-yellow-400 font-semibold">Term & Condition</span> and{' '}
-            <span className="text-yellow-400 font-semibold">Privacy Policy</span>
-          </label>
-        </div>
-
-        <button className="w-full bg-gradient-to-r from-yellow-400 to-yellow-500 text-black font-bold py-2 rounded-xl mt-5">
-          Sign Up
-        </button>
 
         {/* Social Auth */}
         <div className="my-4 text-center text-sm text-gray-400">or sign up with</div>
@@ -81,7 +221,49 @@ const SignUp = ({ isPopupOpen, setIsPopupOpen }) => {
 
 
 
+
+
 const Signin = ({ isPopupOpen, setIsPopupOpen, setPopupType }) => {
+  const [loading, setLoading] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState(null);
+  const [data, setData] = useState(null);
+
+  const handleLoginSubmit = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+    setError(null); // Clear any previous errors before making a new request
+
+    try {
+      const response = await fetch("https://api.coinlooty.com/user/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          email,
+          password,
+        }),
+      });
+
+      const result = await response.json();
+
+      if (response.ok && result.status === "Ok") {
+        // Handle successful login (store token, user details, etc.)
+        setData(result);
+        console.log("Login successful:", result);
+      } else {
+        // Handle errors (invalid credentials, etc.)
+        setError(result.responseMessage || "Login failed. Please try again.");
+      }
+    } catch (err) {
+      setError("Something went wrong. Please try again.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="fixed inset-0 bg-black bg-opacity-70 flex items-center justify-center z-50">
       <div
@@ -101,57 +283,76 @@ const Signin = ({ isPopupOpen, setIsPopupOpen, setPopupType }) => {
         {/* Heading */}
         <h2 className="text-white text-2xl font-bold mb-6 text-center">Sign In</h2>
 
+        {/* Error or Success Message */}
+        {error ? (
+          <h2 style={{ color: "red", fontSize: "17px", textAlign: "center" }}>{error}</h2>
+        ) : data && data.status === "Ok" ? (
+          <h2 style={{ color: "green", fontSize: "17px", textAlign: "center" }}>
+            {data.responseMessage}
+          </h2>
+        ) : null}
+
         {/* Form Fields */}
         <div className="w-full space-y-4">
-          {/* Email */}
-          <div>
-            <label htmlFor="email" className="text-white text-sm font-semibold mb-1 block">
-              Email
-            </label>
-            <div className="flex items-center bg-[#1f2035] px-4 py-3 rounded-md">
-              <svg className="text-gray-400 mr-2" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M2 4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4zm2 0v.01L12 13 20 4.01V4H4zm0 2.6v13.4h16V6.6l-8 7.6-8-7.6z" />
-              </svg>
-              <input
-                type="email"
-                id="email"
-                placeholder="Email address"
-                className="bg-transparent outline-none text-white w-full"
-              />
+          <form onSubmit={handleLoginSubmit}>
+            {/* Email */}
+            <div>
+              <label htmlFor="email" className="text-white text-sm font-semibold mb-2 block">
+                Email
+              </label>
+              <div className="flex items-center bg-[#1f2035] px-4 py-3 rounded-md">
+                <svg className="text-gray-400 mr-2" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M2 4a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V4zm2 0v.01L12 13 20 4.01V4H4zm0 2.6v13.4h16V6.6l-8 7.6-8-7.6z" />
+                </svg>
+                <input
+                  type="email"
+                  name="email"
+                  placeholder="Email address"
+                  className="bg-transparent outline-none text-white w-full"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  required
+                />
+              </div>
             </div>
-          </div>
 
-          {/* Password */}
-          <div>
-            <label htmlFor="password" className="text-white text-sm font-semibold mb-1 block">
-              Password
-            </label>
-            <div className="flex items-center bg-[#1f2035] px-4 py-3 rounded-md">
-              <svg className="text-gray-400 mr-2" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
-                <path d="M12 1a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5zm3 8V6a3 3 0 0 0-6 0v3h6z" />
-              </svg>
-              <input
-                type="password"
-                id="password"
-                placeholder="Enter Password"
-                className="bg-transparent outline-none text-white w-full"
-              />
+            {/* Password */}
+            <div>
+              <label htmlFor="password" className="text-white text-sm font-semibold mt-2 mb-2 block">
+                Password
+              </label>
+              <div className="flex items-center bg-[#1f2035] px-4 py-3 rounded-md">
+                <svg className="text-gray-400 mr-2" width="18" height="18" fill="currentColor" viewBox="0 0 24 24">
+                  <path d="M12 1a5 5 0 0 1 5 5v3h1a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2v-9a2 2 0 0 1 2-2h1V6a5 5 0 0 1 5-5zm3 8V6a3 3 0 0 0-6 0v3h6z" />
+                </svg>
+                <input
+                  type="password"
+                  name="password"
+                  placeholder="Enter Password"
+                  className="bg-transparent outline-none text-white w-full"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                />
+              </div>
+              <div className="text-right text-[13px]" style={{ margin: "5px" }}>
+                <a href="#" className="text-yellow-400 hover:underline">
+                  Forget your password?
+                </a>
+              </div>
             </div>
-            <div className="text-right text-[13px] mt-1">
-              <a href="#" className="text-yellow-400 hover:underline">Forget your password?</a>
-            </div>
-          </div>
 
-          {/* Sign In Button */}
-          <button
-            type="submit"
-            className="w-full py-3 text-white font-semibold rounded-md"
-            style={{
-              background: 'linear-gradient(90deg, #ffce3a 0%, #fba207 100%)'
-            }}
-          >
-            Sign In
-          </button>
+            {/* Sign In Button */}
+            <button
+              type="submit"
+              className={`w-full py-3 text-white font-semibold rounded-md ${
+                loading ? "bg-gray-400 cursor-not-allowed" : "bg-gradient-to-r from-[#ffce3a] to-[#fba207]"
+              }`}
+              disabled={loading}
+            >
+              {loading ? "Signing In..." : "Sign In"}
+            </button>
+          </form>
 
           {/* Divider */}
           <div className="my-4 border-t border-gray-600 relative">
@@ -177,11 +378,11 @@ const Signin = ({ isPopupOpen, setIsPopupOpen, setPopupType }) => {
 
         {/* Register Link */}
         <div className="text-sm text-white mt-6 text-center">
-          Don’t have an account yet?{' '}
+          Don’t have an account yet?{" "}
           <button
             type="button"
             onClick={() => {
-              setPopupType('signup');
+              setPopupType("signup");
               setIsPopupOpen(true);
             }}
             className="text-yellow-400 hover:underline"
@@ -193,6 +394,19 @@ const Signin = ({ isPopupOpen, setIsPopupOpen, setPopupType }) => {
     </div>
   );
 };
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -219,18 +433,18 @@ const Navbar = () => {
           </a>
           <div className={Style.navmenu}>
             <div className="flex gap-1">
-              <FaHandHoldingUsd style={{ color: "#a9a9ca", fontSize: "20px",cursor:"pointer" }} />
-              <span style={{ color: "#a9a9ca",cursor:"pointer" }}>Earn</span>
+              <FaHandHoldingUsd style={{ color: "#a9a9ca", fontSize: "20px", cursor: "pointer" }} />
+              <span style={{ color: "#a9a9ca", cursor: "pointer" }}>Earn</span>
             </div>
             <div className="flex gap-1 mt-1">
-              <BsCashCoin style={{ color: "#a9a9ca", fontSize: "20px", marginTop: "5px",cursor:"pointer" }} />
-              <span style={{ color: "#a9a9ca",cursor:"pointer" }}>Cashout</span>
+              <BsCashCoin style={{ color: "#a9a9ca", fontSize: "20px", marginTop: "5px", cursor: "pointer" }} />
+              <span style={{ color: "#a9a9ca", cursor: "pointer" }}>Cashout</span>
             </div>
           </div>
         </div>
 
         <div className="flex items-center gap-2">
-          <button className={`btn ${Style.navmenu}`} style={{cursor:"pointer"}}>
+          <button className={`btn ${Style.navmenu}`} style={{ cursor: "pointer" }}>
             <BsGlobe style={{ fontSize: "20px", color: "#a9a9ca" }} />
           </button>
           <div className={Style.info}>
@@ -240,7 +454,7 @@ const Navbar = () => {
                 setPopupType('signin');
                 setIsPopupOpen(true);
               }}
-              style={{cursor:"pointer"}}
+              style={{ cursor: "pointer" }}
             >
               Login
             </button>
@@ -250,7 +464,7 @@ const Navbar = () => {
                 setPopupType('signup');
                 setIsPopupOpen(true);
               }}
-              style={{cursor:"pointer"}}
+              style={{ cursor: "pointer" }}
             >
               Sign Up
             </button>
